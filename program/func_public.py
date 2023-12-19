@@ -23,7 +23,6 @@ def get_all_main_contracts():
     
 
 def construct_market_prices():
-    
     # assign varialbes
     tradeable_markets = get_all_main_contracts()['合约代码'].tolist()
     
@@ -71,11 +70,14 @@ def get_candels_historical(market):
 # get candles recent
 def get_candles_recent(market):
     df = pd.read_csv('market_price.csv')
+
     if market in df.columns:
         close_prices = df[market].tolist()
         return np.array(close_prices).astype(np.float)
     else:
-        return None
+        res = ak.futures_zh_daily_sina(symbol=market)
+        close_prices  = res['close'].tolist()
+        return np.array(close_prices).astype(np.float)[-len(df):]
     
 
     
