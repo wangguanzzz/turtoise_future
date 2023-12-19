@@ -138,7 +138,6 @@ def open_positions():
                         
                         # open trades
                         bot_open_dict = bot_agent.open_trades()
-                        print(bot_open_dict)
                         # handle success in opening trades
                         if bot_open_dict["pair_status"] == 'LIVE':
                             
