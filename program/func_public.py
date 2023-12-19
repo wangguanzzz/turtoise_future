@@ -9,6 +9,13 @@ from datetime import datetime
 
 MARKET_REFERENCE = 'market_reference.csv'
 
+def is_rare_contract(market):
+    for rare_contract in ('国际铜', '线材', '动力煤', '胶合板', '强麦', '普麦', '稻', '油菜籽'):
+        if rare_contract in get_contract_cn_name(market):
+            print(f"market {get_contract_cn_name(market)} is low volume")
+            return True
+    return False
+
 def get_contract_cn_name(market):
     df = pd.read_csv(MARKET_REFERENCE)
     matching_row = df[df['合约代码'] == market]

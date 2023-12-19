@@ -11,6 +11,7 @@ def is_open_positions(bot_agents,market):
             return True
     return False
 
+
 # check order status
 def check_order_status( order_id):
     return "live"

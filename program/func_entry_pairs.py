@@ -3,6 +3,7 @@ from func_utils import format_number
 from func_public import get_candles_recent,get_contract_cn_name
 from func_cointegration import calculate_zscore
 from func_private import is_open_positions
+from func_public import is_rare_contract
 from func_bot_agent import BotAgent
 import pandas as pd
 import json
@@ -62,9 +63,11 @@ def open_positions():
                 # enable like-by-like not already open ( diversify trading )
                 is_base_open = is_open_positions(bot_agents,base_market)
                 is_quote_open = is_open_positions(bot_agents,quote_market)
+                is_base_rare = is_rare_contract(base_market)
+                is_quote_rare = is_rare_contract(quote_market)
                 
                 # place trade
-                if not is_base_open and not is_quote_open:
+                if not is_base_open and not is_quote_open and not is_base_rare and not is_quote_rare:
                     # determine the side
                     base_side = "BUY" if z_score < 0 else "SELL"
                     quote_side = "BUY" if z_score >0 else "SELL"
@@ -103,10 +106,6 @@ def open_positions():
                     # check_quote = float(quote_quantity) > float(quote_min_order_size)
                     check_base = True
                     check_quote= True
-                    
-                    # get cn contract name
-                    base_market_cn = get_contract_cn_name(base_market)
-                    quote_market_cn = get_contract_cn_name(quote_market)
                     
                     # if checks pass, place trades
                     if check_base and check_quote:
