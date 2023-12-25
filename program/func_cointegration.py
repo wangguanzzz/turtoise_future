@@ -44,7 +44,7 @@ def calculate_cointegration(series_1, series_2):
 #   - intercept
   half_life = calculate_half_life(spread)
   t_check = coint_t < critical_value
-  coint_flag = 1 if p_value < 0.05 and t_check else 0
+  coint_flag = 1 if p_value < 0.002 and t_check else 0 # original p_value < 0.05
   return coint_flag, hedge_ratio, half_life
 
 def store_cointegration_results(df_market_prices):

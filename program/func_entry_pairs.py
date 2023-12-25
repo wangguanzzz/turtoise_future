@@ -104,8 +104,8 @@ def open_positions():
                     # quote_min_order_size = markets["markets"][quote_market]["minOrderSize"]
                     # check_base = float(base_quantity) > float(base_min_order_size)
                     # check_quote = float(quote_quantity) > float(quote_min_order_size)
-                    check_base = base_size >= 1
-                    check_quote= quote_size >= 1
+                    check_base = float(base_size) >= 1.0
+                    check_quote= float(quote_size) >= 1.0
                     
                     # if checks pass, place trades
                     if check_base and check_quote:
