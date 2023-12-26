@@ -3,10 +3,11 @@ import pandas as pd
 from stratmanager import StrategyManager
 import sklearn.mixture as mix
 from ta.momentum import RSIIndicator
-from constants import CONTINUE_CONTRACTS
+from constants import COMMODITY_DICT
+from func_hmm import add_hmm_feature
 import time
 def prepare_data():
-    for symbol in CONTINUE_CONTRACTS:
+    for symbol in COMMODITY_DICT.keys():
         # protect API
         time.sleep(1)
         print(f"prepare data for {symbol}")
@@ -29,15 +30,16 @@ def prepare_data():
         for ts in t_steps:
             for tf in t_features:
                 df_fe[f"{tf}_T{ts}"] = df_fe[tf].shift(ts)
+        
+        
         # Correct for Stationarity
         df_fs = df_fe.copy()
         df_fs[["Open", "High", "Low", "Volume","Hold"]] = df_fs[["Open", "High", "Low", "Volume","Hold"]].pct_change()
-        df_fs
+        df_fs = add_hmm_feature(df_fs)
+        
         # Check for NaN
         df_fs.dropna(inplace=True)
-        # Check for Inf values in the original DataFrame
-        count = np.isinf(df_fs).values.sum()
-        count
+        
         df_fs.replace([np.inf, -np.inf], np.nan, inplace=True)
         df_fs.fillna(0, inplace=True)
         # Save DataFrame

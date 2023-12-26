@@ -5,3 +5,4 @@ bot_agents.json
 *.csv
 model
 data
+result

@@ -1,6 +1,6 @@
 # Remove Future Warnings
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+# import warnings
+# warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # General
 import numpy as np

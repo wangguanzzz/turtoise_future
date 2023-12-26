@@ -1,6 +1,6 @@
 # Remove Future Warnings
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+# import warnings
+# warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # General
 import numpy as np
@@ -21,6 +21,8 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import precision_score
 from sklearn.metrics import confusion_matrix
 import pickle
+from constants import COMMODITY_DICT
+
 
 def binary_classification(market,direction,params,features):
     # Data Extraction
@@ -120,8 +122,8 @@ def binary_classification(market,direction,params,features):
                 eval_set=eval_set, 
                 verbose=False)
     # Save the model to a file
-    with open(f"model/{market}_{direction}.pkl", "wb") as file:
-        pickle.dump(classifier, file)
+    # with open(f"model/{market}_{direction}.pkl", "wb") as file:
+    #     pickle.dump(classifier, file)
     
     # Load the model from the file
     # with open("xgb_classifier_model.pkl", "rb") as file:
@@ -142,17 +144,21 @@ def binary_classification(market,direction,params,features):
     
     
     # Comparison of Results
+    train_precision = round(precision_score(y_train, train_yhat, average=None)[1], 3)
+    train_sdev = round(train_results.std(), 2)
+    test_precision = round(precision_score(y_test, test_yhat, average=None)[1], 3)
+    test_sdev = round(test_results.std(), 2)
     print(f"TRAIN: {market},{direction}")
     print("Average Acc K-Fold", round(train_results.mean(), 2))
-    print("Std Dev K-Fold", round(train_results.std(), 2))
+    print("Std Dev K-Fold", train_sdev)
     print("Precision Score 0", round(precision_score(y_train, train_yhat, average=None)[0], 3))
-    print("Precision Score 1", round(precision_score(y_train, train_yhat, average=None)[1], 3))
+    print("Precision Score 1", train_precision)
     print("----- ----- ----- ----- ----- ----- -----")
     print(f"TEST: {market},{direction}")
     print("Average Acc K-Fold", round(test_results.mean(), 2))
-    print("Std Dev K-Fold", round(test_results.std(), 2))
+    print("Std Dev K-Fold", test_sdev)
     print("Precision Score 0", round(precision_score(y_test, test_yhat, average=None)[0], 3))
-    print("Precision Score 1", round(precision_score(y_test, test_yhat, average=None)[1], 3))
+    print("Precision Score 1", test_precision )
     print("")
     
     # get real predicted last price
@@ -161,4 +167,4 @@ def binary_classification(market,direction,params,features):
     last_date = X_predict.index[0]
     signal = y_predict[0]
     
-    return (market,round(precision_score(y_test, test_yhat, average=None)[1], 3), round(test_results.std(), 2),last_date,signal)
+    return (market,COMMODITY_DICT[market],test_precision, test_sdev,train_precision,train_sdev,last_date,params,signal)
