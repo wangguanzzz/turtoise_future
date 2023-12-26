@@ -6,6 +6,7 @@ from ta.momentum import RSIIndicator
 from constants import COMMODITY_DICT
 from func_hmm import add_hmm_feature
 import time
+
 def prepare_data():
     for symbol in COMMODITY_DICT.keys():
         # protect API

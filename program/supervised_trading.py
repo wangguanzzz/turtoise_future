@@ -11,7 +11,7 @@ import traceback
 
 if __name__ == "__main__":
     if PREPARE_DATA:
-        print('start preparing data ......')
+        print('start preparing data ......') 
         prepare_data()
     if GENERATE_MODEL:
         print('start train model ......')

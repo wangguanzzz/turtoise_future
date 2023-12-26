@@ -88,5 +88,5 @@ COMMODITY_DICT = {
     'SS0': '不锈钢连续'
 }
 # supervised trading
-PREPARE_DATA = False
-GENERATE_MODEL = True
+PREPARE_DATA = True
+GENERATE_MODEL = False
