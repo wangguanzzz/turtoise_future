@@ -166,5 +166,6 @@ def binary_classification(market,direction,params,features):
     y_predict = classifier.predict(X_predict)
     last_date = X_predict.index[0]
     signal = y_predict[0]
+    market_name,size = COMMODITY_DICT[market]
     
-    return (market,COMMODITY_DICT[market],test_precision, test_sdev,train_precision,train_sdev,last_date,params,signal)
+    return (market,market_name,test_precision, test_sdev,train_precision,train_sdev,last_date,params,signal)
