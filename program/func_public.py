@@ -21,17 +21,17 @@ def get_contract_cn_name(market):
     matching_row = df[df['合约代码'] == market]
     return matching_row.iloc[0]['合约名称']
     
-def get_all_main_contracts():
+def get_all_contracts():
     df = ak.futures_comm_info(symbol="所有")
     df = df[df['交易所名称'].isin(['上海期货交易所', '大连商品交易所', '郑州商品交易所'])]
-    df = df[df['备注']=='主力合约']
+    # df = df[df['备注']=='主力合约']
     df.to_csv(MARKET_REFERENCE)
     return df
     
 
 def construct_market_prices():
     # assign varialbes
-    tradeable_markets = get_all_main_contracts()['合约代码'].tolist()
+    tradeable_markets = get_all_contracts()['合约代码'].tolist()
     
     # set initial dataframe
     close_prices = get_candels_historical(tradeable_markets[0])

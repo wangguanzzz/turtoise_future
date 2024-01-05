@@ -85,5 +85,7 @@ COMMODITY_DICT = {
     'SS0': ('不锈钢连续',5)
 }
 # supervised trading
-PREPARE_DATA = False
+PREPARE_DATA = True
 GENERATE_MODEL = True
+ONE_PERCENT_THRESHOLD = 10000
+TRAIN_TRHESHOLD = 1200

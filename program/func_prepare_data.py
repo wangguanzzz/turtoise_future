@@ -3,7 +3,7 @@ import pandas as pd
 from stratmanager import StrategyManager
 import sklearn.mixture as mix
 from ta.momentum import RSIIndicator
-from constants import COMMODITY_DICT
+from constants import COMMODITY_DICT,TRAIN_TRHESHOLD
 from func_hmm import add_hmm_feature
 import time
 
@@ -36,8 +36,12 @@ def prepare_data():
         # Correct for Stationarity
         df_fs = df_fe.copy()
         df_fs[["Open", "High", "Low", "Volume","Hold"]] = df_fs[["Open", "High", "Low", "Volume","Hold"]].pct_change()
-        df_fs = add_hmm_feature(df_fs)
         
+        
+        # keep last 1000 entry if length > TRAIN_TRHESHOLD
+        if len(df_fs) > TRAIN_TRHESHOLD:
+            df_fs = df_fs.tail(TRAIN_TRHESHOLD)
+        # df_fs = add_hmm_feature(df_fs)
         # Check for NaN
         df_fs.dropna(inplace=True)
         

@@ -83,7 +83,7 @@ def select_feature(market, direction='long'):
     param_grid = {
         "gamma": [0, 0.1, 0.2, 0.5, 1, 1.5, 2, 3, 6, 12, 20],
         "learning_rate": [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8],
-        "max_depth": [1, 2, 3, 4, 5, 6, 8, 12,14],
+        "max_depth": [1, 2, 3, 4, 5, 6, 8, 10],
         "n_estimators": [25, 50, 65, 80, 100, 115, 200]
     }
     # Perform Random Search for Best Hyper params

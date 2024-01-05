@@ -21,7 +21,7 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import precision_score
 from sklearn.metrics import confusion_matrix
 import pickle
-from constants import COMMODITY_DICT
+from constants import COMMODITY_DICT,ONE_PERCENT_THRESHOLD
 
 
 def binary_classification(market,direction,params,features):
@@ -165,7 +165,9 @@ def binary_classification(market,direction,params,features):
     X_predict = X.tail(1)
     y_predict = classifier.predict(X_predict)
     last_date = X_predict.index[0]
+    last_close = df["Close"][last_date]
     signal = y_predict[0]
     market_name,size = COMMODITY_DICT[market]
     
-    return (market,market_name,test_precision, test_sdev,train_precision,train_sdev,last_date,params,signal)
+    trade_size = int(ONE_PERCENT_THRESHOLD/(last_close*size*0.01))
+    return (market,market_name,test_precision, test_sdev,train_precision,train_sdev,last_date,params,trade_size,signal)
