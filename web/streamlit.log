@@ -1,0 +1,205 @@
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.31.237:8501
+  External URL: http://206.83.106.150:8501
+
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26102 (\N{CJK UNIFIED IDEOGRAPH-65F6}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 38388 (\N{CJK UNIFIED IDEOGRAPH-95F4}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 24402 (\N{CJK UNIFIED IDEOGRAPH-5F52}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 19968 (\N{CJK UNIFIED IDEOGRAPH-4E00}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 21270 (\N{CJK UNIFIED IDEOGRAPH-5316}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 20215 (\N{CJK UNIFIED IDEOGRAPH-4EF7}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 26684 (\N{CJK UNIFIED IDEOGRAPH-683C}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 36215 (\N{CJK UNIFIED IDEOGRAPH-8D77}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
+/home/chriswang/anaconda3/lib/python3.12/site-packages/streamlit/elements/pyplot.py:173: UserWarning: Glyph 28857 (\N{CJK UNIFIED IDEOGRAPH-70B9}) missing from font(s) DejaVu Sans.
+  fig.savefig(image, **kwargs)
