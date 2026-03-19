@@ -1,0 +1,4 @@
+target/
+Cargo.lock
+backtest_result.json
+*.log
