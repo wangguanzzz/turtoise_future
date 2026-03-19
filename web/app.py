@@ -9,7 +9,125 @@ import statsmodels.api as sm
 
 st.set_page_config(page_title="协整分析可视化", layout="wide")
 
-st.title("📊 协整分析可视化工具")
+# 添加页面导航
+page = st.sidebar.radio("功能选择", ["协整分析", "回测"])
+
+if page == "回测":
+    st.title("📈 回测")
+    st.markdown("对协整配对交易策略进行历史回测")
+
+    # 加载回测模块
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from turtoise_future.strategies.pair_trading.backtest import run_backtest, load_backtest_data
+
+    # 回测参数设置
+    st.sidebar.header("回测参数")
+
+    # 日期范围
+    try:
+        df_prices, df_pairs = load_backtest_data()
+        min_date = pd.to_datetime(df_prices['datetime']).min().date()
+        max_date = pd.to_datetime(df_prices['datetime']).max().date()
+    except Exception as e:
+        st.error(f"无法加载回测数据: {e}")
+        st.stop()
+
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        start_date = st.date_input("开始日期", min_date, min_value=min_date, max_value=max_date)
+    with col2:
+        end_date = st.date_input("结束日期", max_date, min_value=min_date, max_value=max_date)
+
+    # 资金和参数
+    initial_capital = st.sidebar.number_input("初始资金 (USD)", value=100000, step=10000, key="capital_bt")
+    zscore_threshold = st.sidebar.slider("Z-Score 阈值", 0.5, 3.0, 1.5, 0.1, key="zscore_bt")
+    half_life_threshold = st.sidebar.slider("半衰期阈值 (天)", 1, 20, 8, key="halflife_bt")
+    window = st.sidebar.slider("Z-Score 窗口", 5, 60, 21, key="window_bt")
+    usd_per_trade = st.sidebar.number_input("每笔交易金额 (USD)", value=50000, step=10000, key="usd_bt")
+    commission_per_trade = st.sidebar.slider("手续费 (USD/笔)", 0.0, 500.0, 0.0, 10.0, key="commission_bt", help="每笔交易扣除的手续费（开仓+平仓各一次）")
+
+    # 运行回测
+    if st.button("🚀 运行回测", type="primary"):
+        with st.spinner("回测运行中..."):
+            try:
+                result = run_backtest(
+                    df_prices=df_prices,
+                    df_pairs=df_pairs,
+                    start_date=str(start_date),
+                    end_date=str(end_date),
+                    initial_capital=initial_capital,
+                    zscore_threshold=zscore_threshold,
+                    half_life_threshold=half_life_threshold,
+                    window=window,
+                    usd_per_trade=usd_per_trade,
+                    commission_per_trade=commission_per_trade,
+                )
+
+                # 显示绩效指标
+                st.subheader("📊 绩效指标")
+                m1, m2, m3, m4, m5, m6 = st.columns(6)
+                m1.metric("初始资金", f"${result.initial_capital:,.0f}")
+                m2.metric("最终资金", f"${result.final_capital:,.0f}")
+                m3.metric("总收益率", f"{result.total_return*100:.2f}%")
+                m4.metric("年化收益率", f"{result.annualized_return*100:.2f}%")
+                m5.metric("夏普比率", f"{result.sharpe_ratio:.2f}")
+                m6.metric("最大回撤", f"{result.max_drawdown*100:.2f}%")
+
+                m7, m8, m9 = st.columns(3)
+                m7.metric("胜率", f"{result.win_rate*100:.1f}%")
+                m8.metric("盈亏比", f"{result.profit_loss_ratio:.2f}")
+                m9.metric("交易次数", result.total_trades)
+
+                # 权益曲线
+                if result.equity_curve:
+                    st.subheader("📈 权益曲线")
+                    equity_df = pd.DataFrame(result.equity_curve)
+                    fig_equity, ax = plt.subplots(figsize=(12, 5))
+                    ax.plot(equity_df['capital'], linewidth=2, color='green')
+                    ax.fill_between(range(len(equity_df)), equity_df['capital'], alpha=0.3, color='green')
+                    ax.set_xlabel('时间')
+                    ax.set_ylabel('资金 (USD)')
+                    ax.grid(True, alpha=0.3)
+                    st.pyplot(fig_equity)
+
+                # 交易记录
+                if result.trades:
+                    st.subheader("📋 交易记录")
+                    trades_df = pd.DataFrame(result.trades)
+
+                    # 添加颜色标注
+                    def color_pnl(val):
+                        color = 'green' if val > 0 else 'red' if val < 0 else 'black'
+                        return f'color: {color}'
+
+                    # 显示表格
+                    st.dataframe(
+                        trades_df[['pair', 'entry_date', 'exit_date', 'direction', 'entry_zscore', 'exit_zscore', 'pnl']]
+                        .style.format({'entry_zscore': '{:.2f}', 'exit_zscore': '{:.2f}', 'pnl': '${:.2f}'})
+                        .applymap(lambda x: 'color: green' if isinstance(x, (int, float)) and x > 0 else ('color: red' if isinstance(x, (int, float)) and x < 0 else ''), subset=['pnl']),
+                        use_container_width=True
+                    )
+
+                # 说明
+                with st.expander("📖 回测参数说明"):
+                    st.markdown(f"""
+                    - **Z-Score 阈值**: 开仓信号触发阈值，当前为 {zscore_threshold}
+                    - **半衰期阈值**: 只交易半衰期小于 {half_life_threshold} 天的配对
+                    - **Z-Score 窗口**: 计算 Z-Score 使用的历史窗口天数，当前为 {window} 天
+                    - **每笔交易金额**: 每边合约的交易金额，当前为 ${usd_per_trade:,}
+                    - **手续费**: 每笔交易扣除的手续费，当前为 ${commission_per_trade:.0f}/笔（开仓+平仓共扣 {commission_per_trade*2:.0f} USD）
+                    """)
+
+            except Exception as e:
+                st.error(f"回测失败: {e}")
+                import traceback
+                st.text(traceback.format_exc())
+
+else:
+    # 原有协整分析页面
+    st.title("📊 协整分析可视化工具")
 
 # 合约代码到中文名称的映射
 CONTRACT_NAMES = {
@@ -75,8 +193,8 @@ asset_2 = contract_map[option_2]
 
 # Settings
 st.sidebar.header("参数设置")
-window = st.sidebar.slider("Z-Score 窗口", 5, 60, 21)
-zscore_threshold = st.sidebar.slider("Z-Score 阈值", 0.5, 3.0, 1.5, 0.1)
+window = st.sidebar.slider("Z-Score 窗口", 5, 60, 21, key="window_coint")
+zscore_threshold = st.sidebar.slider("Z-Score 阈值", 0.5, 3.0, 1.5, 0.1, key="zscore_coint")
 
 # Calculate functions
 def calculate_cointegration(series_1, series_2):
