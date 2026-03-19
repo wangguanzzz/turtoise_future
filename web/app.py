@@ -9,8 +9,36 @@ import statsmodels.api as sm
 
 st.set_page_config(page_title="协整分析可视化", layout="wide")
 
+# 合约代码到中文名称的映射 (全局定义，供所有页面使用)
+CONTRACT_NAMES = {
+    # 贵金属
+    "ag": "白银", "au": "黄金",
+    # 基本金属
+    "cu": "铜", "al": "铝", "zn": "锌", "pb": "铅", "ni": "镍", "sn": "锡",
+    # 黑色系
+    "rb": "螺纹钢", "hc": "热卷", "i": "铁矿石", "j": "焦炭", "jm": "焦煤",
+    "ru": "橡胶", "fu": "燃料油", "bu": "沥青", "sp": "纸浆",
+    # 化工
+    "v": "PVC", "l": "塑料", "pp": "聚丙烯", "eg": "乙二醇", "eb": "苯乙烯",
+    "ma": "甲醇", "ta": "PTA", "ur": "尿素", "sa": "纯碱",
+    # 农产品
+    "a": "豆一", "b": "豆二", "m": "豆粕", "y": "豆油", "p": "棕榈油",
+    "c": "玉米", "cs": "淀粉", "jd": "鸡蛋", "lh": "生猪", "fb": "纤维板",
+    "sr": "白糖", "cf": "棉花", "oi": "菜油", "rm": "菜粕", "sf": "硅铁",
+    "sm": "锰硅", "cy": "棉纱", "ap": "苹果", "cj": "红枣", "pk": "花生",
+    # 有色
+    "nr": "20号胶", "ss": "不锈钢",
+}
+
+def get_cn_name(code: str) -> str:
+    """从合约代码提取中文名称"""
+    prefix = code[:2].lower()
+    suffix = code[2:]
+    cn_name = CONTRACT_NAMES.get(prefix, prefix.upper())
+    return f"{cn_name}{suffix}"
+
 # 添加页面导航
-page = st.sidebar.radio("功能选择", ["协整分析", "回测"])
+page = st.sidebar.radio("功能选择", ["协整分析", "回测", "配对概览"])
 
 if page == "回测":
     st.title("📈 回测")
@@ -125,38 +153,118 @@ if page == "回测":
                 import traceback
                 st.text(traceback.format_exc())
 
+elif page == "配对概览":
+    st.title("🔗 协整配对概览")
+    st.markdown("展示所有发现的协整配对及其关系热力图")
+
+    # 加载配对数据
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from turtoise_future.strategies.pair_trading.backtest import load_backtest_data
+
+    try:
+        df_pairs = load_backtest_data()[1]  # 只取 pairs DataFrame
+    except Exception as e:
+        st.error(f"无法加载配对数据: {e}")
+        st.stop()
+
+    # 统计概览
+    st.subheader("📊 统计概览")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("总配对数", len(df_pairs))
+
+    # 获取所有合约
+    all_contracts = set(df_pairs['base_market'].unique()) | set(df_pairs['quote_market'].unique())
+    col2.metric("涉及合约数", len(all_contracts))
+
+    col3.metric("平均半衰期", f"{df_pairs['half_life'].mean():.1f} 天")
+    col4.metric("最短半衰期", f"{df_pairs['half_life'].min():.0f} 天")
+
+    # 按品种统计配对数量
+    st.subheader("📈 按品种统计配对数量")
+    df_pairs['base_prefix'] = df_pairs['base_market'].str[:2]
+    df_pairs['quote_prefix'] = df_pairs['quote_market'].str[:2]
+    prefix_counts = pd.concat([
+        df_pairs['base_prefix'].value_counts(),
+        df_pairs['quote_prefix'].value_counts()
+    ]).groupby(level=0).sum().sort_values(ascending=True)
+
+    fig_prefix, ax_prefix = plt.subplots(figsize=(10, 6))
+    prefix_counts.plot(kind='barh', ax=ax_prefix, color='steelblue')
+    ax_prefix.set_xlabel('配对数量')
+    ax_prefix.set_ylabel('品种')
+    ax_prefix.grid(True, alpha=0.3)
+    st.pyplot(fig_prefix)
+
+    # 半衰期分布
+    st.subheader("📉 半衰期分布")
+    fig_hl, ax_hl = plt.subplots(figsize=(8, 4))
+    df_pairs['half_life'].hist(bins=20, ax=ax_hl, color='steelblue', edgecolor='white')
+    ax_hl.set_xlabel('半衰期 (天)')
+    ax_hl.set_ylabel('配对数量')
+    ax_hl.grid(True, alpha=0.3)
+    st.pyplot(fig_hl)
+
+    # 热力图 - 构建配对矩阵
+    st.subheader("🗺️ 配对关系热力图")
+    st.markdown("颜色表示回归速度（越深表示均值回归越快）")
+
+    # 获取合约列表（按品种分组排序）
+    all_contracts_sorted = sorted(all_contracts, key=lambda x: (x[:2], x[2:]))
+
+    # 创建邻接矩阵
+    n = len(all_contracts_sorted)
+    contract_to_idx = {c: i for i, c in enumerate(all_contracts_sorted)}
+
+    # 使用半衰期倒数作为值（越小越快回归，颜色越深）
+    matrix = np.zeros((n, n))
+    for _, row in df_pairs.iterrows():
+        i = contract_to_idx.get(row['base_market'])
+        j = contract_to_idx.get(row['quote_market'])
+        if i is not None and j is not None:
+            # 使用倒数，半衰期越小值越大（颜色越深）
+            matrix[i, j] = 1.0 / row['half_life'] if row['half_life'] > 0 else 1
+            matrix[j, i] = 1.0 / row['half_life'] if row['half_life'] > 0 else 1
+
+    # 绘制热力图
+    fig_heat, ax_heat = plt.subplots(figsize=(14, 12))
+    im = ax_heat.imshow(matrix, cmap='YlOrRd', aspect='auto')
+
+    # 设置标签
+    ax_heat.set_xticks(range(n))
+    ax_heat.set_yticks(range(n))
+    ax_heat.set_xticklabels(all_contracts_sorted, rotation=90, fontsize=7)
+    ax_heat.set_yticklabels(all_contracts_sorted, fontsize=7)
+
+    ax_heat.set_xlabel('合约')
+    ax_heat.set_ylabel('合约')
+
+    # 添加颜色条
+    cbar = plt.colorbar(im, ax=ax_heat, shrink=0.8)
+    cbar.set_label('回归速度 (1/半衰期)', rotation=270, labelpad=15)
+
+    st.pyplot(fig_heat)
+
+    # 配对列表
+    st.subheader("📋 配对列表")
+    display_df = df_pairs[['base_market', 'quote_market', 'hedge_ratio', 'half_life']].copy()
+    display_df['base_name'] = display_df['base_market'].apply(get_cn_name)
+    display_df['quote_name'] = display_df['quote_market'].apply(get_cn_name)
+    display_df = display_df[['base_market', 'base_name', 'quote_market', 'quote_name', 'hedge_ratio', 'half_life']]
+    display_df.columns = ['合约1', '名称', '合约2', '名称', '对冲比率', '半衰期']
+
+    st.dataframe(
+        display_df.style.format({
+            '对冲比率': '{:.4f}',
+            '半衰期': '{:.0f}'
+        }),
+        use_container_width=True
+    )
+
 else:
     # 原有协整分析页面
     st.title("📊 协整分析可视化工具")
-
-# 合约代码到中文名称的映射
-CONTRACT_NAMES = {
-    # 贵金属
-    "ag": "白银", "au": "黄金",
-    # 基本金属
-    "cu": "铜", "al": "铝", "zn": "锌", "pb": "铅", "ni": "镍", "sn": "锡",
-    # 黑色系
-    "rb": "螺纹钢", "hc": "热卷", "i": "铁矿石", "j": "焦炭", "jm": "焦煤",
-    "ru": "橡胶", "fu": "燃料油", "bu": "沥青", "sp": "纸浆",
-    # 化工
-    "v": "PVC", "l": "塑料", "pp": "聚丙烯", "eg": "乙二醇", "eb": "苯乙烯",
-    "ma": "甲醇", "ta": "PTA", "ur": "尿素", "sa": "纯碱",
-    # 农产品
-    "a": "豆一", "b": "豆二", "m": "豆粕", "y": "豆油", "p": "棕榈油",
-    "c": "玉米", "cs": "淀粉", "jd": "鸡蛋", "lh": "生猪", "fb": "纤维板",
-    "sr": "白糖", "cf": "棉花", "oi": "菜油", "rm": "菜粕", "sf": "硅铁",
-    "sm": "锰硅", "cy": "棉纱", "ap": "苹果", "cj": "红枣", "pk": "花生",
-    # 有色
-    "nr": "20号胶", "ss": "不锈钢",
-}
-
-def get_cn_name(code: str) -> str:
-    """从合约代码提取中文名称"""
-    # 例如: cu2604 -> 铜2604
-    prefix = code[:2].lower()
-    suffix = code[2:]
-    cn_name = CONTRACT_NAMES.get(prefix, prefix.upper())
-    return f"{cn_name}{suffix}"
 
 # Load data
 @st.cache_data
