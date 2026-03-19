@@ -178,8 +178,8 @@ elif page == "配对概览":
     all_contracts = set(df_pairs['base_market'].unique()) | set(df_pairs['quote_market'].unique())
     col2.metric("涉及合约数", len(all_contracts))
 
-    col3.metric("平均半衰期", f"{df_pairs['half_life'].mean():.1f} 天")
-    col4.metric("最短半衰期", f"{df_pairs['half_life'].min():.0f} 天")
+    col3.metric("平均半衰期", f"{df_pairs['half_life'].mean():.1f} 天" if df_pairs['half_life'].notna().any() else "N/A")
+    col4.metric("最短半衰期", f"{df_pairs['half_life'].min():.0f} 天" if df_pairs['half_life'].notna().any() else "N/A")
 
     # 按品种统计配对数量
     st.subheader("📈 按品种统计配对数量")
@@ -223,9 +223,14 @@ elif page == "配对概览":
         i = contract_to_idx.get(row['base_market'])
         j = contract_to_idx.get(row['quote_market'])
         if i is not None and j is not None:
-            # 使用倒数，半衰期越小值越大（颜色越深）
-            matrix[i, j] = 1.0 / row['half_life'] if row['half_life'] > 0 else 1
-            matrix[j, i] = 1.0 / row['half_life'] if row['half_life'] > 0 else 1
+            hl = row['half_life']
+            # 安全处理：避免除零和无效值
+            if pd.notna(hl) and hl > 0 and np.isfinite(hl):
+                matrix[i, j] = 1.0 / hl
+                matrix[j, i] = 1.0 / hl
+            else:
+                matrix[i, j] = 0
+                matrix[j, i] = 0
 
     # 绘制热力图
     fig_heat, ax_heat = plt.subplots(figsize=(14, 12))
@@ -252,7 +257,7 @@ elif page == "配对概览":
     display_df['base_name'] = display_df['base_market'].apply(get_cn_name)
     display_df['quote_name'] = display_df['quote_market'].apply(get_cn_name)
     display_df = display_df[['base_market', 'base_name', 'quote_market', 'quote_name', 'hedge_ratio', 'half_life']]
-    display_df.columns = ['合约1', '名称', '合约2', '名称', '对冲比率', '半衰期']
+    display_df.columns = ['合约1', '合约1名称', '合约2', '合约2名称', '对冲比率', '半衰期']
 
     st.dataframe(
         display_df.style.format({
@@ -504,163 +509,188 @@ elif page == "监督学习":
         - **标准差**: 5折交叉验证的标准差，越低越稳定
         """)
 
-else:
+elif page == "协整分析":
     # 原有协整分析页面
     st.title("📊 协整分析可视化工具")
 
-# Load data
-@st.cache_data
-def load_data():
-    import os
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    df = pd.read_csv(os.path.join(base_dir, 'program/market_price.csv'), parse_dates=['datetime'])
-    return df
+    # Load data
+    @st.cache_data
+    def load_data():
+        import os
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        df = pd.read_csv(os.path.join(base_dir, 'program/market_price.csv'), parse_dates=['datetime'])
+        return df
 
-try:
-    df = load_data()
-    contracts = [c for c in df.columns if c != 'datetime']
-    # 创建合约选项列表（显示中文）
-    contract_options = [f"{get_cn_name(c)} ({c})" for c in contracts]
-    # 映射
-    contract_map = {f"{get_cn_name(c)} ({c})": c for c in contracts}
-except Exception as e:
-    st.error(f"无法加载数据: {e}")
-    st.stop()
+    try:
+        df = load_data()
+        contracts = [c for c in df.columns if c != 'datetime']
+        # 创建合约选项列表（显示中文）
+        contract_options = [f"{get_cn_name(c)} ({c})" for c in contracts]
+        # 映射
+        contract_map = {f"{get_cn_name(c)} ({c})": c for c in contracts}
+    except Exception as e:
+        st.error(f"无法加载数据: {e}")
+        st.stop()
 
-# Sidebar - Contract selection
-st.sidebar.header("选择合约")
+    # Sidebar - Contract selection
+    st.sidebar.header("选择合约")
 
-# 默认选择铜
-default_idx1 = next((i for i, c in enumerate(contracts) if c == 'cu2604'), 0)
-default_idx2 = next((i for i, c in enumerate(contracts) if c == 'cu2605'), 1)
+    # 默认选择铜
+    default_idx1 = next((i for i, c in enumerate(contracts) if c == 'cu2604'), 0)
+    default_idx2 = next((i for i, c in enumerate(contracts) if c == 'cu2605'), 1)
 
-option_1 = st.sidebar.selectbox("合约1", contract_options, index=default_idx1)
-option_2 = st.sidebar.selectbox("合约2", contract_options, index=default_idx2)
+    option_1 = st.sidebar.selectbox("合约1", contract_options, index=default_idx1)
+    option_2 = st.sidebar.selectbox("合约2", contract_options, index=default_idx2)
 
-# 获取实际合约代码
-asset_1 = contract_map[option_1]
-asset_2 = contract_map[option_2]
+    # 获取实际合约代码
+    asset_1 = contract_map[option_1]
+    asset_2 = contract_map[option_2]
 
-# Settings
-st.sidebar.header("参数设置")
-window = st.sidebar.slider("Z-Score 窗口", 5, 60, 21, key="window_coint")
-zscore_threshold = st.sidebar.slider("Z-Score 阈值", 0.5, 3.0, 1.5, 0.1, key="zscore_coint")
+    # Settings
+    st.sidebar.header("参数设置")
+    window = st.sidebar.slider("Z-Score 窗口", 5, 60, 21, key="window_coint")
+    zscore_threshold = st.sidebar.slider("Z-Score 阈值", 0.5, 3.0, 1.5, 0.1, key="zscore_coint")
 
-# Calculate functions
-def calculate_cointegration(series_1, series_2):
-    coint_res = coint(series_1, series_2)
-    coint_t = coint_res[0]
-    p_value = coint_res[1]
-    critical_value = coint_res[2][1]
-    model = sm.OLS(series_1, series_2).fit()
-    hedge_ratio = model.params[0]
-    coint_flag = 1 if p_value < 0.05 and coint_t < critical_value else 0
-    return coint_flag, hedge_ratio, p_value, coint_t, critical_value
+    # Calculate functions
+    def calculate_cointegration(series_1, series_2):
+        coint_res = coint(series_1, series_2)
+        coint_t = coint_res[0]
+        p_value = coint_res[1]
+        critical_value = coint_res[2][1]
+        model = sm.OLS(series_1, series_2).fit()
+        hedge_ratio = model.params[0]
+        coint_flag = 1 if p_value < 0.05 and coint_t < critical_value else 0
+        return coint_flag, hedge_ratio, p_value, coint_t, critical_value
 
-def calculate_zscore(spread, window):
-    spread_series = pd.Series(spread)
-    mean = spread_series.rolling(center=False, window=window).mean()
-    std = spread_series.rolling(center=False, window=window).std()
-    x = spread_series.rolling(center=False, window=1).mean()
-    zscore = (x - mean) / std
-    return zscore
+    def calculate_zscore(spread, window):
+        spread_series = pd.Series(spread)
+        mean = spread_series.rolling(center=False, window=window).mean()
+        std = spread_series.rolling(center=False, window=window).std()
+        x = spread_series.rolling(center=False, window=1).mean()
+        # 避免除零和inf/nan
+        std = std.replace(0, np.nan)
+        zscore = (x - mean) / std
+        zscore = zscore.replace([np.inf, -np.inf], np.nan)
+        return zscore
 
-def calculate_half_life(spread):
-    df_spread = pd.DataFrame(spread, columns=['spread'])
-    spread_lag = df_spread.spread.shift(1)
-    spread_lag.iloc[0] = spread_lag.iloc[1]
-    spread_ret = df_spread.spread - spread_lag
-    spread_ret.iloc[0] = spread_ret.iloc[1]
-    spread_lag2 = sm.add_constant(spread_lag)
-    model = sm.OLS(spread_ret, spread_lag2)
-    res = model.fit()
-    halflife = round(-np.log(2) / res.params.iloc[1], 0)
-    return halflife
-
-# Main analysis
-if asset_1 and asset_2:
-    # Calculate
-    series_1 = df[asset_1].values.astype(float)
-    series_2 = df[asset_2].values.astype(float)
-
-    coint_flag, hedge_ratio, p_value, coint_t, critical_value = calculate_cointegration(series_1, series_2)
-    spread = series_1 - (hedge_ratio * series_2)
-    half_life = calculate_half_life(spread)
-    zscore = calculate_zscore(spread, window)
-
-    # Display metrics
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("Hedge Ratio", f"{hedge_ratio:.4f}")
-    col2.metric("Half Life", f"{half_life:.0f} 天")
-    col3.metric("P-Value", f"{p_value:.4f}")
-    col4.metric("T-Stat", f"{coint_t:.4f}")
-    col5.metric("协整", "✅ 是" if coint_flag else "❌ 否", delta_color="normal")
-
-    # 中文名称
-    cn_name_1 = get_cn_name(asset_1)
-    cn_name_2 = get_cn_name(asset_2)
-
-    # Price comparison chart
-    st.subheader(f"📈 {cn_name_1} vs {cn_name_2} 价格对比")
-    asset_1_norm = series_1 / series_1[0] * 100
-    asset_2_norm = series_2 / series_2[0] * 100
-
-    fig1, ax1 = plt.subplots(figsize=(12, 5))
-    ax1.plot(asset_1_norm, label=cn_name_1, linewidth=1.5)
-    ax1.plot(asset_2_norm, label=cn_name_2, linewidth=1.5)
-    ax1.set_xlabel('时间')
-    ax1.set_ylabel('归一化价格 (起点=100)')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-    st.pyplot(fig1)
-
-    # Spread and Z-Score chart
-    st.subheader("📉 Spread 和 Z-Score 分析")
-
-    fig2, ax2 = plt.subplots(figsize=(12, 5))
-    ax2.plot(spread, color='blue', label='Spread', linewidth=1.5)
-    ax2.set_ylabel('Spread', color='blue')
-    ax2.tick_params(axis='y', labelcolor='blue')
-    ax2.legend(loc='upper left')
-
-    ax3 = ax2.twinx()
-    ax3.plot(zscore, color='green', label='Z-Score', linewidth=1.5, alpha=0.7)
-    ax3.axhline(y=0, color='r', linestyle='--', linewidth=1)
-    ax3.axhline(y=zscore_threshold, color='orange', linestyle='--', linewidth=1, label=f'+{zscore_threshold} STD')
-    ax3.axhline(y=-zscore_threshold, color='orange', linestyle='--', linewidth=1, label=f'-{zscore_threshold} STD')
-    ax3.set_ylabel('Z-Score', color='green')
-    ax3.tick_params(axis='y', labelcolor='green')
-    ax3.legend(loc='upper right')
-
-    st.pyplot(fig2)
-
-    # 交易信号
-    latest_zscore = zscore.iloc[-1] if not zscore.empty else 0
-    st.subheader("🚨 交易信号")
-
-    signal_col1, signal_col2, signal_col3 = st.columns(3)
-    with signal_col1:
-        st.info(f"最新 Z-Score: **{latest_zscore:.2f}**")
-    with signal_col2:
-        if latest_zscore > zscore_threshold:
-            st.warning("📉 **做空信号**: Z-Score 超过 +1.5")
-        elif latest_zscore < -zscore_threshold:
-            st.warning("📈 **做多信号**: Z-Score 低于 -1.5")
+    def calculate_half_life(spread):
+        df_spread = pd.DataFrame(spread, columns=['spread'])
+        spread_lag = df_spread.spread.shift(1)
+        spread_lag.iloc[0] = spread_lag.iloc[1]
+        spread_ret = df_spread.spread - spread_lag
+        spread_ret.iloc[0] = spread_ret.iloc[1]
+        spread_lag2 = sm.add_constant(spread_lag)
+        model = sm.OLS(spread_ret, spread_lag2)
+        res = model.fit()
+        theta = res.params.iloc[1]
+        # 只有theta为负时才有均值回归特性，否则返回inf
+        if theta < 0:
+            halflife = round(-np.log(2) / theta, 0)
+            halflife = max(1, halflife)  # 至少1天
         else:
-            st.success("⏳ **无信号**: 等待机会")
-    with signal_col3:
-        half_life_info = f"预计 {half_life:.0f} 天后回归均值" if half_life > 0 else "无法计算"
-        st.text(half_life_info)
+            halflife = np.inf  # 无均值回归
+        return halflife
 
-    # Explanation
-    with st.expander("📖 指标说明"):
-        st.markdown("""
-        - **Hedge Ratio**: 对冲比率，用于计算Spread
-        - **Half Life**: 均值回归半周期，表示价差回归均值所需的预期时间
-        - **P-Value**: 协整检验的p值，<0.05表示显著协整
-        - **T-Stat**: 协整检验的t统计量
-        - **Z-Score**: 标准化价差，超过设定阈值表示可能存在交易机会
-        - **交易信号**:
-          - Z-Score > +1.5: 价差偏高，做空价差
-          - Z-Score < -1.5: 价差偏低，做多价差
-        """)
+    # Main analysis
+    if asset_1 and asset_2:
+        # Calculate
+        series_1 = df[asset_1].values.astype(float)
+        series_2 = df[asset_2].values.astype(float)
+
+        coint_flag, hedge_ratio, p_value, coint_t, critical_value = calculate_cointegration(series_1, series_2)
+        spread = series_1 - (hedge_ratio * series_2)
+        half_life = calculate_half_life(spread)
+        zscore = calculate_zscore(spread, window)
+
+        # Display metrics
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric("Hedge Ratio", f"{hedge_ratio:.4f}")
+        if np.isfinite(half_life) and half_life > 0:
+            col2.metric("Half Life", f"{half_life:.0f} 天")
+        else:
+            col2.metric("Half Life", "∞")
+        col3.metric("P-Value", f"{p_value:.4f}")
+        col4.metric("T-Stat", f"{coint_t:.4f}")
+        col5.metric("协整", "✅ 是" if coint_flag else "❌ 否", delta_color="normal")
+
+        # 中文名称
+        cn_name_1 = get_cn_name(asset_1)
+        cn_name_2 = get_cn_name(asset_2)
+
+        # Price comparison chart
+        st.subheader(f"📈 {cn_name_1} vs {cn_name_2} 价格对比")
+        asset_1_norm = series_1 / series_1[0] * 100
+        asset_2_norm = series_2 / series_2[0] * 100
+
+        fig1, ax1 = plt.subplots(figsize=(12, 5))
+        ax1.plot(asset_1_norm, label=cn_name_1, linewidth=1.5)
+        ax1.plot(asset_2_norm, label=cn_name_2, linewidth=1.5)
+        ax1.set_xlabel('时间')
+        ax1.set_ylabel('归一化价格 (起点=100)')
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+        st.pyplot(fig1)
+
+        # Spread and Z-Score chart
+        st.subheader("📉 Spread 和 Z-Score 分析")
+
+        fig2, ax2 = plt.subplots(figsize=(12, 5))
+        ax2.plot(spread, color='blue', label='Spread', linewidth=1.5)
+        ax2.set_ylabel('Spread', color='blue')
+        ax2.tick_params(axis='y', labelcolor='blue')
+        ax2.legend(loc='upper left')
+
+        ax3 = ax2.twinx()
+        ax3.plot(zscore, color='green', label='Z-Score', linewidth=1.5, alpha=0.7)
+        ax3.axhline(y=0, color='r', linestyle='--', linewidth=1)
+        ax3.axhline(y=zscore_threshold, color='orange', linestyle='--', linewidth=1, label=f'+{zscore_threshold} STD')
+        ax3.axhline(y=-zscore_threshold, color='orange', linestyle='--', linewidth=1, label=f'-{zscore_threshold} STD')
+        ax3.set_ylabel('Z-Score', color='green')
+        ax3.tick_params(axis='y', labelcolor='green')
+        ax3.legend(loc='upper right')
+
+        st.pyplot(fig2)
+
+        # 交易信号
+        # 安全获取最新zscore，处理NaN和空值
+        valid_zscores = zscore.dropna()
+        if len(valid_zscores) > 0:
+            latest_zscore = valid_zscores.iloc[-1]
+        else:
+            latest_zscore = 0
+        st.subheader("🚨 交易信号")
+
+        signal_col1, signal_col2, signal_col3 = st.columns(3)
+        with signal_col1:
+            if np.isfinite(latest_zscore):
+                st.info(f"最新 Z-Score: **{latest_zscore:.2f}**")
+            else:
+                st.warning("Z-Score 无效（数据不足或窗口过短）")
+        with signal_col2:
+            if not np.isfinite(latest_zscore):
+                st.warning("⚠️ 数据不足，无法生成信号")
+            elif latest_zscore > zscore_threshold:
+                st.warning("📉 **做空信号**: Z-Score 超过 +1.5")
+            elif latest_zscore < -zscore_threshold:
+                st.warning("📈 **做多信号**: Z-Score 低于 -1.5")
+            else:
+                st.success("⏳ **无信号**: 等待机会")
+        with signal_col3:
+            if np.isfinite(half_life) and half_life > 0:
+                half_life_info = f"预计 {half_life:.0f} 天后回归均值"
+            else:
+                half_life_info = "当前数据无均值回归特性"
+            st.text(half_life_info)
+
+        # Explanation
+        with st.expander("📖 指标说明"):
+            st.markdown("""
+            - **Hedge Ratio**: 对冲比率，用于计算Spread
+            - **Half Life**: 均值回归半周期，表示价差回归均值所需的预期时间
+            - **P-Value**: 协整检验的p值，<0.05表示显著协整
+            - **T-Stat**: 协整检验的t统计量
+            - **Z-Score**: 标准化价差，超过设定阈值表示可能存在交易机会
+            - **交易信号**:
+              - Z-Score > +1.5: 价差偏高，做空价差
+              - Z-Score < -1.5: 价差偏低，做多价差
+            """)
