@@ -71,8 +71,8 @@ def prepare_data():
         df_fs.replace([np.inf, -np.inf], np.nan, inplace=True)
         df_fs.fillna(0, inplace=True)
 
-        # Save DataFrame
+        # Save DataFrame - use program/data for consistency with model.py and selection.py
         from pathlib import Path
-        data_dir = Path(__file__).parent.parent.parent / "data"
-        data_dir.mkdir(parents=True, exist_ok=True)
-        df_fs.to_csv(data_dir / f"{symbol}.csv")
+        base_dir = Path(__file__).parent.parent.parent.parent / "program" / "data"
+        base_dir.mkdir(parents=True, exist_ok=True)
+        df_fs.to_csv(base_dir / f"{symbol}.csv")

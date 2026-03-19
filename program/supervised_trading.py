@@ -9,6 +9,7 @@ Usage:
 import sys
 import csv
 import traceback
+import os
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -48,8 +49,10 @@ def main():
                     traceback.print_exc()
                     continue
 
-            # Save results
-            filename = f"result/{direction}_result.csv"
+            # Save results - use program/result directory
+            result_dir = Path(__file__).parent / "result"
+            result_dir.mkdir(parents=True, exist_ok=True)
+            filename = str(result_dir / f"{direction}_result.csv")
             Path(filename).parent.mkdir(parents=True, exist_ok=True)
             with open(filename, "w", newline="") as file:
                 writer = csv.writer(file)

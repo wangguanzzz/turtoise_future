@@ -4,6 +4,12 @@ import numpy as np
 import pandas as pd
 from xgboost import XGBClassifier
 from sklearn.model_selection import RandomizedSearchCV
+from pathlib import Path
+
+
+def _get_data_dir():
+    """Get the data directory path consistently"""
+    return Path(__file__).parent.parent.parent.parent / "program" / "data"
 
 
 def select_feature(market: str, direction: str = "long"):
@@ -17,7 +23,7 @@ def select_feature(market: str, direction: str = "long"):
     Returns:
         Tuple of (optimized_parameters, recommended_feature_labels)
     """
-    df = pd.read_csv(f"data/{market}.csv")
+    df = pd.read_csv(_get_data_dir() / f"{market}.csv")
     df.set_index("Date", inplace=True)
 
     # Create target based on direction

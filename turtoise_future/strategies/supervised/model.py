@@ -9,6 +9,12 @@ from ...config.commodities import COMMODITY_DICT
 from ...config.settings import settings
 
 
+def _get_data_dir():
+    """Get the data directory path consistently"""
+    from pathlib import Path
+    return Path(__file__).parent.parent.parent.parent / "program" / "data"
+
+
 def train_model(market: str, direction: str, params: tuple, features: list):
     """
     Train XGBoost classifier for a market and direction.
@@ -22,7 +28,7 @@ def train_model(market: str, direction: str, params: tuple, features: list):
     Returns:
         Tuple of results
     """
-    df = pd.read_csv(f"data/{market}.csv")
+    df = pd.read_csv(_get_data_dir() / f"{market}.csv")
     df.set_index("Date", inplace=True)
 
     # Create target based on direction

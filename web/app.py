@@ -38,7 +38,7 @@ def get_cn_name(code: str) -> str:
     return f"{cn_name}{suffix}"
 
 # 添加页面导航
-page = st.sidebar.radio("功能选择", ["协整分析", "回测", "配对概览"])
+page = st.sidebar.radio("功能选择", ["协整分析", "回测", "配对概览", "监督学习"])
 
 if page == "回测":
     st.title("📈 回测")
@@ -261,6 +261,248 @@ elif page == "配对概览":
         }),
         use_container_width=True
     )
+
+elif page == "监督学习":
+    st.title("🤖 监督学习策略")
+    st.markdown("基于XGBoost分类器的期货价格变动预测")
+
+    # 加载监督学习模块
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from turtoise_future.strategies.supervised import prepare_data, select_feature, train_model
+    from turtoise_future.config.commodities import COMMODITY_DICT
+    from turtoise_future.config.settings import settings
+
+    # 路径设置
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(base_dir, "program", "data")
+    result_dir = os.path.join(base_dir, "program", "result")
+    os.makedirs(data_dir, exist_ok=True)
+    os.makedirs(result_dir, exist_ok=True)
+
+    # 数据准备状态
+    st.subheader("📊 数据状态")
+
+    # 检查哪些合约已有数据
+    available_contracts = []
+    missing_contracts = []
+    for contract in COMMODITY_DICT.keys():
+        csv_path = os.path.join(data_dir, f"{contract}.csv")
+        if os.path.exists(csv_path):
+            available_contracts.append(contract)
+        else:
+            missing_contracts.append(contract)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("已准备数据", len(available_contracts))
+    with col2:
+        st.metric("缺少数据", len(missing_contracts))
+
+    # 数据准备
+    st.subheader("🔧 数据准备")
+
+    if st.button("📥 下载并准备数据", type="primary"):
+        with st.spinner("正在下载市场数据..."):
+            try:
+                prepare_data()
+                st.success("数据准备完成!")
+            except Exception as e:
+                st.error(f"数据准备失败: {e}")
+                import traceback
+                st.text(traceback.format_exc())
+
+    # 显示缺少数据的合约
+    if missing_contracts:
+        with st.expander("缺少数据的合约"):
+            st.write(", ".join(missing_contracts[:20]) + ("..." if len(missing_contracts) > 20 else ""))
+
+    # 模型训练
+    st.subheader("🧠 模型训练")
+
+    col_train1, col_train2 = st.columns(2)
+
+    with col_train1:
+        if st.button("📈 训练做多模型 (Long)", type="secondary"):
+            with st.spinner("训练做多模型中..."):
+                output = []
+                progress_bar = st.progress(0)
+                total = len(COMMODITY_DICT.keys())
+                for i, contract in enumerate(COMMODITY_DICT.keys()):
+                    try:
+                        params, features = select_feature(contract, "long")
+                        result = train_model(contract, "long", params, features)
+                        output.append(result)
+                    except Exception as e:
+                        st.warning(f"训练 {contract} 失败: {e}")
+                        continue
+                    progress_bar.progress((i + 1) / total)
+
+                # 保存结果
+                filename = os.path.join(result_dir, "long_result.csv")
+                with open(filename, "w", newline="") as file:
+                    import csv
+                    writer = csv.writer(file)
+                    for row in output:
+                        writer.writerow(row)
+                st.success(f"做多模型训练完成! 结果保存至 {filename}")
+
+    with col_train2:
+        if st.button("📉 训练做空模型 (Short)", type="secondary"):
+            with st.spinner("训练做空模型中..."):
+                output = []
+                progress_bar = st.progress(0)
+                total = len(COMMODITY_DICT.keys())
+                for i, contract in enumerate(COMMODITY_DICT.keys()):
+                    try:
+                        params, features = select_feature(contract, "short")
+                        result = train_model(contract, "short", params, features)
+                        output.append(result)
+                    except Exception as e:
+                        st.warning(f"训练 {contract} 失败: {e}")
+                        continue
+                    progress_bar.progress((i + 1) / total)
+
+                # 保存结果
+                filename = os.path.join(result_dir, "short_result.csv")
+                with open(filename, "w", newline="") as file:
+                    import csv
+                    writer = csv.writer(file)
+                    for row in output:
+                        writer.writerow(row)
+                st.success(f"做空模型训练完成! 结果保存至 {filename}")
+
+    # 显示训练结果
+    st.subheader("📋 训练结果")
+
+    col_long, col_short = st.columns(2)
+
+    with col_long:
+        st.markdown("### 📈 做多模型 (Long)")
+        long_path = os.path.join(result_dir, "long_result.csv")
+        if os.path.exists(long_path):
+            try:
+                df_long = pd.read_csv(long_path, header=None)
+                df_long.columns = ['合约', '名称', '测试精度', '测试标准差', '训练精度', '训练标准差', '最新日期', '参数', '交易规模', '信号']
+                df_long['信号'] = df_long['信号'].apply(lambda x: '✅ 做多' if x == 1 else '❌ 不做多')
+                st.dataframe(df_long[['合约', '名称', '测试精度', '测试标准差', '信号']], use_container_width=True)
+            except Exception as e:
+                st.error(f"读取做多结果失败: {e}")
+        else:
+            st.info("请先训练做多模型")
+
+    with col_short:
+        st.markdown("### 📉 做空模型 (Short)")
+        short_path = os.path.join(result_dir, "short_result.csv")
+        if os.path.exists(short_path):
+            try:
+                df_short = pd.read_csv(short_path, header=None)
+                df_short.columns = ['合约', '名称', '测试精度', '测试标准差', '训练精度', '训练标准差', '最新日期', '参数', '交易规模', '信号']
+                df_short['信号'] = df_short['信号'].apply(lambda x: '✅ 做空' if x == 1 else '❌ 不做空')
+                st.dataframe(df_short[['合约', '名称', '测试精度', '测试标准差', '信号']], use_container_width=True)
+            except Exception as e:
+                st.error(f"读取做空结果失败: {e}")
+        else:
+            st.info("请先训练做空模型")
+
+    # 最新信号汇总
+    st.subheader("🚨 最新交易信号")
+
+    if os.path.exists(long_path) and os.path.exists(short_path):
+        try:
+            df_long = pd.read_csv(long_path, header=None)
+            df_long.columns = ['合约', '名称', '测试精度', '测试标准差', '训练精度', '训练标准差', '最新日期', '参数', '交易规模', '信号']
+
+            df_short = pd.read_csv(short_path, header=None)
+            df_short.columns = ['合约', '名称', '测试精度', '测试标准差', '训练精度', '训练标准差', '最新日期', '参数', '交易规模', '信号']
+
+            # 合并信号
+            signals = []
+            for contract in COMMODITY_DICT.keys():
+                long_row = df_long[df_long['合约'] == contract]
+                short_row = df_short[df_short['合约'] == contract]
+
+                if len(long_row) > 0 and len(short_row) > 0:
+                    long_signal = long_row.iloc[0]['信号'] == '✅ 做多'
+                    short_signal = short_row.iloc[0]['信号'] == '✅ 做空'
+                    long_precision = long_row.iloc[0]['测试精度']
+                    short_precision = short_row.iloc[0]['测试精度']
+
+                    if long_signal and short_signal:
+                        action = "⚠️ 矛盾信号"
+                    elif long_signal:
+                        action = "📈 做多"
+                    elif short_signal:
+                        action = "📉 做空"
+                    else:
+                        action = "⏸️ 观望"
+
+                    signals.append({
+                        '合约': contract,
+                        '名称': COMMODITY_DICT[contract][0],
+                        '信号': action,
+                        '做多精度': long_precision,
+                        '做空精度': short_precision
+                    })
+
+            df_signals = pd.DataFrame(signals)
+
+            # 按信号分类显示
+            col_action1, col_action2, col_action3 = st.columns(3)
+
+            long_signals = df_signals[df_signals['信号'] == '📈 做多']
+            short_signals = df_signals[df_signals['信号'] == '📉 做空']
+            neutral_signals = df_signals[df_signals['信号'].isin(['⏸️ 观望', '⚠️ 矛盾信号'])]
+
+            with col_action1:
+                st.markdown("#### 📈 做多信号")
+                if len(long_signals) > 0:
+                    st.dataframe(long_signals, use_container_width=True)
+                else:
+                    st.info("无做多信号")
+
+            with col_action2:
+                st.markdown("#### 📉 做空信号")
+                if len(short_signals) > 0:
+                    st.dataframe(short_signals, use_container_width=True)
+                else:
+                    st.info("无做空信号")
+
+            with col_action3:
+                st.markdown("#### ⏸️ 观望/矛盾")
+                if len(neutral_signals) > 0:
+                    st.dataframe(neutral_signals, use_container_width=True)
+                else:
+                    st.info("无观望信号")
+
+        except Exception as e:
+            st.error(f"汇总信号失败: {e}")
+            import traceback
+            st.text(traceback.format_exc())
+    else:
+        st.info("请先训练模型以获取交易信号")
+
+    # 说明
+    with st.expander("📖 监督学习说明"):
+        st.markdown("""
+        ### 策略说明
+        - **做多模型 (Long)**: 预测下一秒价格上涨的概率，概率>0.5时给出做多信号
+        - **做空模型 (Short)**: 预测下一秒价格下跌的概率，概率>0.5时给出做空信号
+
+        ### 特征工程
+        - 收益率 (Returns)
+        - 价格范围 (Range = High/Low - 1)
+        - RSI 指标
+        - 移动平均线 (MA_12, MA_21)
+        - 滚动累积收益率 (Roll_Rets)
+        - 滚动平均范围 (Avg_Range)
+        - 时滞特征 (T1, T2)
+
+        ### 模型评估
+        - **测试精度**: 模型在测试集上的精确率
+        - **标准差**: 5折交叉验证的标准差，越低越稳定
+        """)
 
 else:
     # 原有协整分析页面
